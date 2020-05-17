@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     View,
     Text,
@@ -45,9 +45,9 @@ const PlayScreen = function({route}){
     }
 
     useEffect(() => {
-        if ( tabus.length === index ){
-            Fetchwords()
+        if ( tabus.length === index && tabus.length !== 0){
             setIndex(0)
+            Fetchwords()
         }
     }, [index])
 
@@ -72,7 +72,6 @@ const PlayScreen = function({route}){
                 setKazanan(awayScore > homeScore ? awayName : awayScore === homeScore ? 'Berabere' : homeScore);
             }
 
-            
         }
 
         return () => clearInterval(interval)
@@ -173,7 +172,22 @@ const PlayScreen = function({route}){
                     </Text>
                 </View>
                 <View style={[style.yasak_kelime]}>
-                    {tabus[index].forbiden.map((item, _) => <Text key={_} style={[style.k_yasak]}>{item.kelime}</Text>)}
+                    {tabus[index].forbidden.map((item, _) => <Text key={_} style={[style.k_yasak]}>{item.kelime}</Text>)}
+                </View>
+            </View>}
+            {tabus.length === index &&
+            <View style={[style.tabuscreen]}>
+                <View style={[style.header]}>
+                    <Text style={[style.kelime, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5}]}>
+                        
+                    </Text>
+                </View>
+                <View style={[style.yasak_kelime]}>
+                    <Text key={1} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
+                    <Text key={2} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
+                    <Text key={3} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
+                    <Text key={4} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
+                    <Text key={5} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
                 </View>
             </View>}
             <View style={{flexDirection: 'row'}}>
@@ -315,7 +329,8 @@ const style = StyleSheet.create({
         width: '100%',
         color: '#535353',
         paddingVertical: 10,
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        marginRight: 'auto'
     },
     baslat: {
         position: 'absolute',
