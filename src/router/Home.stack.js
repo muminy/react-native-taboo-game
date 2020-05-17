@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import AppRoute from '../AppRoute';
 import MainScreen from '../screens/Main.screen'
-import { ThemeContext } from '../context/ThemeContext';
 import CreateGameScreen from '../screens/CreateGame.screen';
-import { BackHeader, GameHeader } from '../components/Header';
+import { BackHeader } from '../components/Header';
 import PlayGameScreen from '../screens/PlayGame.screen';
 import Colors from '../constant/Colors';
 

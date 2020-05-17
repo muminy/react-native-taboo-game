@@ -1,12 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
     View,
     Text,
     StyleSheet,
-    FlatList
 } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
-import { PlayIcon, SettingIcon, InfoIcon } from '../Icons'
+import { PlayIcon } from '../Icons'
 import Menus from '../components/Menus';
 import AppRoute from '../AppRoute';
 

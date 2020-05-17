@@ -1,13 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 import { 
-    View,
     Text,
     StyleSheet,
-    TouchableOpacity,
     TouchableHighlight
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Colors from '../constant/Colors';
 
 export default function({id, text, Icon, route}){
 

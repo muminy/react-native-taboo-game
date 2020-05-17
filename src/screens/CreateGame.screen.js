@@ -3,15 +3,9 @@ import {
     View,
     Text,
     StyleSheet,
-    FlatList,
     TextInput,
-    TouchableOpacity,
     TouchableHighlight
 } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
-import { PlayIcon, SettingIcon, InfoIcon } from '../Icons'
-import Menus from '../components/Menus';
-import { useNavigation } from '@react-navigation/native';
 import AppRoute from '../AppRoute';
 import Slider from '@react-native-community/slider';
 
