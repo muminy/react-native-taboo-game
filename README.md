@@ -9,9 +9,6 @@
 Download all required packages with npm package management
 ```
 npm install
-```
-next step
-```
 // run android emulator
 npx react-native run-android
 ```
