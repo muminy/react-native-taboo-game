@@ -17,8 +17,6 @@ const App = () => {
       <StatusBar backgroundColor={Colors.backgroundColor} barStyle="dark-content" />
       <Stack.Navigator screenOptions={{ cardStyle: { backgroundColor: Colors.backgroundColor} }} headerMode="none">
         <Stack.Screen name={AppRoute.HOME_MENU} component={HomeStack} />
-        <Stack.Screen name={AppRoute.AYARLAR} component={CreateGameScreen} />
-        <Stack.Screen name={AppRoute.OYNANIŞ} component={PlayGameScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

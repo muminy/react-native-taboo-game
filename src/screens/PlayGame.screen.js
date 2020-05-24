@@ -7,6 +7,11 @@ import {
     TouchableHighlight
 } from 'react-native';
 import { GameHeader } from '../components/Header';
+import ScoreTableComponent from '../components/ScoreTableComponent';
+import UserAction from '../components/UserAction';
+import GameArea from '../components/GameArea';
+import GameActions from '../components/GameActions';
+import StartGameComponent from '../components/StartGameComponent';
 
 
 
@@ -24,7 +29,7 @@ const PlayScreen = function({route}){
 
     
     const [remainingSecs, setRemainingSecs] = useState(route.params.time);
-    const [start, setStart] = useState(false);
+    const [start, setStart] = useState(true);
     const [firstGame, setFirstGame] = useState(true);
     const [homeScore, setHomeScore] = useState(0);
     const [awayScore, setAwayScore] = useState(0);
@@ -34,42 +39,24 @@ const PlayScreen = function({route}){
     const [homeName, setHomeName] = useState(route.params.teamhome);
     const [currenTeam, setCurrenTeam] = useState(route.params.teamhome);
     const [index, setIndex] = useState(0);
-    const [tabus, setTabus] = useState([]);
+    const [tabus, setTabus] = useState(route.params.words);
     const [tur, setTur] = useState(1)
     const [kazanan, setKazanan] = useState(false)
-
-    const Fetchwords = () => {
-        fetch('http://192.168.2.104:4040/')
-        .then(data => data.json())
-        .then(data => setTabus(data))
-    }
-
-    useEffect(() => {
-        if ( tabus.length === index && tabus.length !== 0){
-            setIndex(0)
-            Fetchwords()
-        }
-    }, [index])
-
-    useEffect(() => {
-        Fetchwords()
-    }, [])
 
     useEffect(() => {
         let interval = null;
         
-        if ( start && remainingSecs !== 0 ){
-            interval = setInterval(() => {
-                setRemainingSecs(remainingSecs => remainingSecs -1)
-            }, 1000)
+        if ( !start && remainingSecs !== 0 ){
+            interval = setInterval(() => setRemainingSecs(remainingSecs => remainingSecs -1), 1000)
         } else if ( remainingSecs === 0 ) {
-            setStart(false);
+            setStart(true);
             setRemainingSecs(route.params.time);
             currenTeam === homeName ? setCurrenTeam(awayName) : setCurrenTeam(homeName);
 
             if ( tur === route.params.tur && currenTeam === awayName ){
-                setStart(false);
-                setKazanan(awayScore > homeScore ? awayName : awayScore === homeScore ? 'Berabere' : homeScore);
+                setStart(true);
+                setKazanan(awayScore > homeScore ? awayName : awayScore === homeScore ? 'Berabere' : homeName);
+                setFirstGame(true)
             }
 
         }
@@ -78,8 +65,9 @@ const PlayScreen = function({route}){
     }, [start, remainingSecs]);
 
     const FullTime = getRemaining(remainingSecs).mins + ':' + getRemaining(remainingSecs).secs;
+
     const StartAGame = () => {
-        setStart(true)
+        setStart(false)
         setFirstGame(false);
         setLiveScore(0)
         setPas(2)
@@ -115,8 +103,7 @@ const PlayScreen = function({route}){
         setTur(1)
         setPas(2)
         Fetchwords()
-        setIndex(0)
-        setStart(true)
+        setStart(false)
         setFirstGame(false)
         setKazanan(false)
     }
@@ -124,132 +111,33 @@ const PlayScreen = function({route}){
     return (
         <View style={[style.main]}>
             <GameHeader team={currenTeam} time={FullTime} />
-            <View style={[style.skore]}>
-                <View style={[style.flex, style.home]}>
-                    <Text style={{flex: .7}}>
-                        Tur
-                    </Text>
-                    <Text style={[style.score]}>
-                        {tur}
-                    </Text>
-                </View>
-                <View style={[style.flex, style.home]}>
-                    <Text style={{flex: .7}}>
-                        {homeName}
-                    </Text>
-                    <Text style={[style.score]}>
-                        {homeScore}
-                    </Text>
-                </View>
-                <View style={[style.flex, style.away]}>
-                    <Text style={{flex: .7}}>
-                        {awayName}
-                    </Text>
-                    <Text style={[style.score]}>
-                        {awayScore}
-                    </Text>
-                </View>
-            </View>
-            <View style={[style.skore,style.flex, style.skoretable]}>
-                <View style={[style.flex, { flex: .5, justifyContent: 'center'}]}>
-                    <Text>Pas hakkı: </Text>
-                    <Text>
-                        {pas}
-                    </Text>
-                </View>
-                <View style={[style.flex, { flex: .5, justifyContent: 'center'}]}>
-                    <Text>Skor: </Text>
-                    <Text>
-                        {liveScore}
-                    </Text>
-                </View>
-            </View>
-            {tabus.length > index &&
-            <View style={[style.tabuscreen]}>
-                <View style={[style.header]}>
-                    <Text style={[style.kelime]}>
-                        {tabus[index].word}
-                    </Text>
-                </View>
-                <View style={[style.yasak_kelime]}>
-                    {tabus[index].forbidden.map((item, _) => <Text key={_} style={[style.k_yasak]}>{item.kelime}</Text>)}
-                </View>
-            </View>}
-            {tabus.length === index &&
-            <View style={[style.tabuscreen]}>
-                <View style={[style.header]}>
-                    <Text style={[style.kelime, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5}]}>
-                        
-                    </Text>
-                </View>
-                <View style={[style.yasak_kelime]}>
-                    <Text key={1} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
-                    <Text key={2} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
-                    <Text key={3} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
-                    <Text key={4} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
-                    <Text key={5} style={[style.k_yasak, {width: 120, height: 20, backgroundColor: '#b8b8b8', borderRadius: 5, marginVertical: 10, marginLeft: 10}]}></Text>
-                </View>
-            </View>}
-            <View style={{flexDirection: 'row'}}>
-                <TouchableHighlight 
-                    underlayColor="#1cad60"
-                    disabled={remainingSecs === 0}
-                    onPress={() => TabuDogru()}
-                    style={[style.dogru, style.buttons]}>
-                    <Text style={[style.text]}>Doğru!</Text>
-                </TouchableHighlight>
-                <TouchableHighlight 
-                    underlayColor="#926d53"
-                    disabled={remainingSecs === 0}
-                    onPress={() => PasGec()}
-                    style={[style.pas, style.buttons]}>
-                    <Text style={[style.text]}>Pass!</Text>
-                </TouchableHighlight>
-                <TouchableHighlight 
-                    underlayColor="#ce4b3d"
-                    disabled={remainingSecs === 0}
-                    onPress={() => TabuOldu()}
-                    style={[style.tabu, style.buttons]}>
-                    <Text style={[style.text]}>Tabu!</Text>
-                </TouchableHighlight>
-            </View>
-            {!start &&
-            <View style={[style.baslat]}>
-                <View style={[style.alert]}>
-                    {!kazanan &&
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                        {currenTeam === homeName ? homeName : awayName}
-                    </Text>}
-                    <View style={{marginBottom: 0}}>
-                        {!kazanan
-                            ? <Text style={{marginTop: 5}}>Hazır olduğunuzda başlayın</Text>
-                            : (
-                                <View style={{flexDirection: 'row'}}>
-                                    <Text>Kazana takım</Text>
-                                    <Text style={{marginLeft: 'auto', fontWeight: 'bold'}}>{kazanan}</Text>
-                                </View>
-                            )
-                        }
-                        <TouchableOpacity onPress={() => !kazanan ? StartAGame() : resetTheGame()} style={{paddingHorizontal: 20,backgroundColor: '#85f070', marginTop: 5, borderRadius: 5, marginTop: 8}}>
-                            <Text style={{paddingVertical: 7, textAlign: 'center', fontWeight: 'bold'}}>
-                                {!kazanan ? 'Başlat' : 'Yeniden başlat'}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    {!firstGame && !kazanan &&
-                    <React.Fragment>
-                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 5, marginTop: 10}}>
-                            {currenTeam === homeName ? awayName : homeName}
-                        </Text>
-                        <View style={[style.flex, style.home, { borderWidth: 1, borderColor: '#ddd', marginBottom: 0}]}>
-                            <Text style={{flex: .7}}>Score</Text>
-                            <Text style={[style.score]}>
-                                {liveScore}
-                            </Text>
-                        </View>
-                    </React.Fragment>}
-                </View>
-            </View>}
+            <ScoreTableComponent 
+                awayName={awayName} 
+                homeName={homeName} 
+                awayScore={awayScore}
+                homeScore={homeScore}
+                tur={tur} />
+            <UserAction 
+                liveSkor={liveScore}
+                pas={pas}
+            />
+            {tabus?.length ? <GameArea tabus={tabus} index={index} /> : null }
+            <GameActions 
+                PasGec={() => PasGec()}
+                TabuDogru={() => TabuDogru()}
+                TabuOldu={() => TabuOldu()}
+                remainingSecs={remainingSecs}
+            />
+            {start ? (
+                <StartGameComponent 
+                    kazanan={kazanan} 
+                    StartGame={() => StartAGame()}
+                    currentTeam={currenTeam}
+                    lastTeam={currenTeam === homeName ? awayName : homeName}
+                    liveScore={liveScore}
+                    resetGame={() => resetTheGame()} 
+                    firstGame={firstGame} />
+            ) : null}
         </View>
     )
 }

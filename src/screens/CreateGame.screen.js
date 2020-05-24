@@ -16,16 +16,36 @@ export default function({navigation}){
     const [teamaway, setAway] = useState('Team 2');
     const [type, setType] = useState('Kolay');
     const [sure, setSure] = useState(120);
-    const [tur, setTur] = useState(10)
-    const startGame = () => {
+    const [tur, setTur] = useState(10);
+    
+    const Fetchwords = async () => {
+        const fetch_words = await fetch('https://puuwto.com/api/words', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                API_KEY: '29c40030-b009-4e1e-a737-69d10bd2e4ca',
+            })
+        });
+
+        const JsonData = await fetch_words.json();
+        return JsonData;
+    }
+
+
+    const startGame = async () => {
         const gamedata ={
             teamhome: teamhome,
             teamaway: teamaway,
             type: type,
             time: sure,
-            tur: tur
+            tur: tur,
+            words: await Fetchwords()
         };
         navigation.navigate(AppRoute.PLAY_A_GAME, gamedata);
+        console.log()
     }
 
     return (
@@ -42,34 +62,6 @@ export default function({navigation}){
                     onChangeText={_ => setAway(_)}
                     value={teamaway} />
             </View>
-            {/* <View style={{flexDirection: 'row', marginBottom: 10, paddingHorizontal: 15}}>
-                <TouchableOpacity 
-                    onPress={() => setType('Kolay')} 
-                    style={[style.type, {
-                        backgroundColor: type === 'Kolay' ? '#1ed775' : '#f7f7f7', 
-                        marginRight: 5,
-                        borderColor: type === 'Kolay' ? '#1ed775' : '#ddd',
-                    }]}>
-                    <Text style={{fontWeight: 'bold', fontSize: 17}}>Kolay</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    onPress={() => setType('Orta')} 
-                    style={[style.type, {
-                        backgroundColor: type === 'Orta' ? '#1ed775' : '#f7f7f7', 
-                        borderColor: type === 'Orta' ? '#1ed775' : '#ddd',
-                        marginRight: 5
-                    }]}>
-                    <Text style={{fontWeight: 'bold', fontSize: 17}}>Orta</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    onPress={() => setType('Zor')} 
-                    style={[style.type, {
-                        backgroundColor: type === 'Zor' ? '#1ed775' : '#f7f7f7',
-                        borderColor: type === 'Zor' ? '#1ed775' : '#ddd'
-                    }]}>
-                    <Text style={{fontWeight: 'bold', fontSize: 17}}>Zor</Text>
-                </TouchableOpacity>
-            </View> */}
             <View style={{flexDirection: 'row', paddingHorizontal: 15, marginTop: 15, marginBottom: 5}}>
                 <Text style={{flex: .7}}>Tur sayısı</Text>
                 <Text style={{flex: .3, textAlign: 'right'}}>{tur}</Text>
